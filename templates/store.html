@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card bg-dark text-white">
+        <div class="card-body">
+            <h1 class="card-title">Магазин</h1>
+            {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+            {% if success %}<div class="alert alert-success">{{ success }}</div>{% endif %}
+            <h3>Баланс USD: ${{ balance_usd|round(2) }}</h3>
+            <h3>Портфель:</h3>
+            <ul>
+                {% for crypto in crypto_list %}
+                    <li>{{ crypto|upper }}: {{ portfolio[crypto]|round(6) }}</li>
+                {% endfor %}
+            </ul>
+            <h3>Текущие цены (CoinGecko):</h3>
+            <div id="prices" class="mb-3"></div>
+            <form method="POST">
+                <div class="mb-3">
+                    <select name="crypto" class="form-select">
+                        {% for crypto in crypto_list %}
+                            <option value="{{ crypto }}">{{ crypto|upper }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <input type="number" class="form-control" name="amount" placeholder="Количество" required min="0.000001" step="0.000001">
+                </div>
+                <button type="submit" name="action" value="buy" class="btn btn-success">Купить</button>
+                <button type="submit" name="action" value="sell" class="btn btn-danger">Продать</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        fetch('/api/prices')
+            .then(response => response.json())
+            .then(data => {
+                let html = '';
+                Object.keys(data).forEach(crypto => {
+                    html += `<p>${crypto.toUpperCase()}: $${data[crypto].usd}</p>`;
+                });
+                document.getElementById('prices').innerHTML = html;
+            })
+            .catch(() => {
+                document.getElementById('prices').innerHTML = '<p>Ошибка загрузки цен</p>';
+            });
+    </script>
+{% endblock %}

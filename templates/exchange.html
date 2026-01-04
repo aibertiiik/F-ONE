@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card bg-dark text-white">
+        <div class="card-body">
+            <h1 class="card-title">Биржа</h1>
+            <form method="POST" class="mb-3">
+                <select name="crypto" class="form-select" onchange="this.form.submit()">
+                    {% for crypto in crypto_list %}
+                        <option value="{{ crypto }}" {% if crypto == selected_crypto %}selected{% endif %}>{{ crypto|upper }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            <canvas id="cryptoChart" height="200"></canvas>
+        </div>
+    </div>
+    <script>
+        const selectedCrypto = '{{ selected_crypto }}';
+        fetch(`/api/historical?crypto=${selectedCrypto}&days=30`)
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('cryptoChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: `${selectedCrypto.toUpperCase()} USD`,
+                            data: data.values,
+                            borderColor: '#007BFF',
+                            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: { beginAtZero: false }
+                        }
+                    }
+                });
+            });
+    </script>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card bg-dark text-white">
+        <div class="card-body">
+            <h1 class="card-title">Логин</h1>
+            {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+            <form method="POST">
+                <div class="mb-3">
+                    <input type="text" class="form-control" name="username" placeholder="Логин" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control" name="password" placeholder="Пароль" required>
+                </div>
+                <p>Введите текст с изображения:</p>
+                <img src="{{ captcha.image }}" alt="CAPTCHA" class="img-fluid border">
+                <div class="mb-3">
+                    <input type="text" class="form-control" name="captcha_text" placeholder="Текст капчи" required autocomplete="off">
+                </div>
+                <button type="submit" class="btn btn-primary">Войти</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
