@@ -1,0 +1,16 @@
+body {
+    background-color: #001f3f;
+    color: white;
+}
+
+.card {
+    background-color: #0d2b4a !important;
+}
+
+.table-dark {
+    --bs-table-bg: #0d2b4a;
+}
+
+.alert {
+    margin-bottom: 1rem;
+}
